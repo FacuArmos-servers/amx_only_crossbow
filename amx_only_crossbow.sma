@@ -248,7 +248,7 @@ public fwd_misc_spawned(entity_id) {
 	server_print("fwd_misc_spawned: %s", entity_id_str);
 	#endif
 
-	set_task(0.1, "remove_entities_from_arrays", entity_id * 16);
+	set_task(0.25, "remove_entities_from_arrays", entity_id * 16);
 }
 
 /*
