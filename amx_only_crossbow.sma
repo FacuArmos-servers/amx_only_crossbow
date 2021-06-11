@@ -6,7 +6,7 @@
 #include <hamsandwich>
 
 #define PLUGIN "Crossbow Only"
-#define VERSION "0.45b"
+#define VERSION "0.48b"
 #define AUTHOR "Facundo Montero (facuarmo)"
 
 // Ucomment to enable server console debugging.
@@ -31,6 +31,8 @@ const OFFSET_CLIP = 40;
 const OFFSET_LINUX = 4;
 
 const CROSSBOW_MAX_CLIP = 5;
+
+const ENTITY_INVALID = 0;
 
 new players[32], player_count = 0;
 
@@ -99,15 +101,21 @@ remove_entity_with_class(entity_name[], entity_class[] = "") {
 		server_print("thinking %s", entity_str);
 		#endif
 
-		// This *SHOULD* notify the engine that we're gonna remove that entity.
-		dllfunc(DLLFunc_Think, entity);
+		if (pev_valid(entity) != ENTITY_INVALID) {
+			// This *SHOULD* notify the engine that we're gonna remove that entity.
+			dllfunc(DLLFunc_Think, entity);
+			remove_entity(entity);
+
+			#if defined DEBUG
+			server_print("remove_entity: %s", entity_str);
+			#endif
+		}
+		#if defined DEBUG // Please don't bully me for the look of this statement :)
+		else {
+			server_print("pev: invalid for %s", entity_str);
+		}
+		#endif
 	}
-
-	remove_entity_name(target_entity);
-
-	#if defined DEBUG
-	server_print("remove_entity_name: %s", target_entity);
-	#endif
 }
 
 /*
