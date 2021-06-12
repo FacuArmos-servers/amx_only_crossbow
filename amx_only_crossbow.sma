@@ -6,7 +6,7 @@
 #include <hamsandwich>
 
 #define PLUGIN "Crossbow Only"
-#define VERSION "0.48b"
+#define VERSION "0.67b"
 #define AUTHOR "Facundo Montero (facuarmo)"
 
 // Ucomment to enable server console debugging.
@@ -123,26 +123,32 @@ remove_entity_with_class(entity_name[], entity_class[] = "") {
  * @return int
  */
 public drop_weapons(player_id) {
-	new weapons[32], weapon_count = 0;
+	new user_weapons[32], user_weapon_count = 0;
 
-	new weapon_name[32];
+	new user_weapon_name[32];
 
-	get_user_weapons(player_id, weapons, weapon_count);
+	get_user_weapons(player_id, user_weapons, user_weapon_count);
 
-	for (new weapon_index = 0; weapon_index < weapon_count; weapon_index++) {
-		if (weapon_index != 0) {
-			get_weaponname(weapons[weapon_index], weapon_name, 32);
-			
-			if (!equali(weapon_name, "weapon_crossbow")) {
-				client_cmd(player_id, "drop %s", weapon_name);
-			}
+	for (new user_weapon_index = 0; user_weapon_index < user_weapon_count; user_weapon_index++) {
+		#if defined DEBUG
+		new user_name[512];
+
+		get_user_name(player_id, user_name, 512);
+
+		server_print("drop_weapons @ %s: weapon_%s", user_name, user_weapon_name);
+		#endif
+
+		get_weaponname(user_weapons[user_weapon_index], user_weapon_name, 32);
+
+		if (!equali(user_weapon_name, "weapon_crossbow")) {
+			client_cmd(player_id, "drop %s", user_weapon_name);
+
+			#if defined DEBUG
+			server_print("client_cmd @ %s: sent 'drop %s'", user_name, user_weapon_name);
+			#endif
 		}
-		
-		// This is just a quick workaround, I'm gonna fix it at some point, trust me c:.
-		client_cmd(player_id, "drop %s", "weapon_crowbar");
-		//client_cmd(player_id, "drop %s", "weapon_9mm_handgun");
 	}
-	
+
 	return PLUGIN_CONTINUE;
 }
 
