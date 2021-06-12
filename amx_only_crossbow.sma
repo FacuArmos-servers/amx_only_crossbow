@@ -156,6 +156,10 @@ public drop_weapons(player_id) {
  */
 public handle_weapons(player_id, task_id) {
 	if (is_user_alive(player_id)) {
+		#if defined DEBUG
+		server_print("handle_weapons: calling drop_weapons()...");
+		#endif
+
 		drop_weapons(player_id);
 
 		if (!user_has_weapon(player_id, HLW_CROSSBOW)) {
@@ -176,6 +180,10 @@ public handle_weapons(player_id, task_id) {
  * @return int
  */
 public weapon_changed(player_id) {
+	#if defined DEBUG
+	server_print("weapon_changed: calling handle_weapons()...");
+	#endif
+
 	set_task(0.1, "handle_weapons", player_id);
 
 	return PLUGIN_HANDLED;
@@ -193,6 +201,10 @@ public handle_round_start() {
 
 	for (new player_index = 0; player_index < player_count; player_index++) {
 		if (is_user_alive(players[player_index])) {
+			#if defined DEBUG
+			server_print("handle_round_start: calling drop_weapons()...");
+			#endif
+
 			drop_weapons(players[player_index]);
 	
 			give_item(players[player_index], "weapon_crossbow");
@@ -259,6 +271,10 @@ public fwd_weaponbox_touched(entity_id) {
  * @return int
  */
 public handle_drop(player_id) {
+	#if defined DEBUG
+	server_print("handle_drop: calling handle_weapons()...");
+	#endif
+
 	handle_weapons(player_id, player_id * 32);
 
 	return PLUGIN_CONTINUE;
