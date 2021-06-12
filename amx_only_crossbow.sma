@@ -66,8 +66,27 @@ new const weapons[13][] = {
 	"tripmine"
 };
 
-new const misc[1][] = { 
-	"weaponbox"
+/*
+ * @param int entity
+ *
+ * @return void
+ */
+remove_entity_safe(entity_id) {
+	#if defined DEBUG
+	new entity_str[32];
+
+	num_to_str(entity_id, entity_str, 32);
+	#endif
+
+	if (pev_valid(entity_id) == ENTITY_INVALID) {
+		#if defined DEBUG // Please don't bully me for the look of this statement :)
+			server_print("pev: invalid for %s", entity_str);
+		#endif
+		
+		return;
+	}
+
+	remove_entity(entity_id);
 }
 
 /*
@@ -86,36 +105,15 @@ remove_entity_with_class(entity_name[], entity_class[] = "") {
 
 	strcat(target_entity, entity_name, 64);
 
-	new entity = -1;
-
 	#if defined DEBUG
-	server_print("preparing to think @ %s", target_entity);
+	server_print("preparing to remove @ %s", target_entity);
 	#endif
 
-	while (entity = find_ent_by_class(entity, target_entity)) {
-		#if defined DEBUG
-		new entity_str[32];
+	remove_entity_name(target_entity);
 
-		num_to_str(entity, entity_str, 32);
-
-		server_print("thinking %s", entity_str);
-		#endif
-
-		if (pev_valid(entity) != ENTITY_INVALID) {
-			// This *SHOULD* notify the engine that we're gonna remove that entity.
-			dllfunc(DLLFunc_Think, entity);
-			remove_entity(entity);
-
-			#if defined DEBUG
-			server_print("remove_entity: %s", entity_str);
-			#endif
-		}
-		#if defined DEBUG // Please don't bully me for the look of this statement :)
-		else {
-			server_print("pev: invalid for %s", entity_str);
-		}
-		#endif
-	}
+	#if defined DEBUG
+	server_print("remove_entity_name: %s", target_entity);
+	#endif
 }
 
 /*
@@ -234,20 +232,15 @@ public remove_entities_from_arrays() {
 	for (new index = 0; index < sizeof(weapons); index++) {
 		remove_entity_with_class(weapons[index], "weapon");
 	}
-
-	for (new index = 0; index < sizeof(misc); index++) {
-		remove_entity_with_class(misc[index]);
-	}
 }
 
 /*
- * This method is a forwarded call from HamSandwich, which from the expectation of the spawn of a
- * weaponbox, it'll try to remove all unwanted entities back again (this might not be what should
- * really be happening? But eh... atm it just works).
+ * This method is a forwarded call from HamSandwich, which from the expectation of the touch of a
+ * weaponbox, it'll try to remove the entity that's just been rendered and the player touched.
  *
  * @return void
  */
-public fwd_misc_spawned(entity_id) {
+public fwd_weaponbox_touched(entity_id) {
 	#if defined DEBUG
 	new entity_id_str[32];
 	
@@ -256,7 +249,7 @@ public fwd_misc_spawned(entity_id) {
 	server_print("fwd_misc_spawned: %s", entity_id_str);
 	#endif
 
-	set_task(0.1, "remove_entities_from_arrays", entity_id * 16);
+	remove_entity_safe(entity_id);
 }
 
 /*
@@ -295,7 +288,7 @@ public plugin_init() {
 	register_event("CurWeapon","weapon_changed","b","1=1");
 	register_event("ResetHUD","round_start","b","1=1");
 	register_clcmd("drop", "handle_drop");
-	RegisterHam( Ham_Spawn, "weaponbox", "fwd_misc_spawned", 1 );
+	RegisterHam( Ham_Touch, "weaponbox", "fwd_weaponbox_touched", 1 );
 	RegisterHam( Ham_Weapon_PrimaryAttack, "weapon_crossbow", "handle_primary_attack", 1 );
 
 	return PLUGIN_CONTINUE;
