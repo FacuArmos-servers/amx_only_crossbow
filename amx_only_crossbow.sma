@@ -34,8 +34,6 @@ const CROSSBOW_MAX_CLIP = 5;
 
 const ENTITY_INVALID = 0;
 
-new players[32], player_count = 0;
-
 // TODO: Rewrite this constant arrays block, so that it uses constant weapon IDs instead.
 new const ammo[9][] = {
 	"357",
@@ -167,10 +165,6 @@ public handle_weapons(player_id, task_id) {
 		#endif
 
 		drop_weapons(player_id);
-
-		if (!user_has_weapon(player_id, HLW_CROSSBOW)) {
-			give_item(player_id, "weapon_crossbow");
-		}
 	}
 
 	return PLUGIN_HANDLED;
@@ -256,18 +250,26 @@ public remove_entities_from_arrays() {
  * This method is a forwarded call from HamSandwich, which from the expectation of the touch of a
  * weaponbox, it'll try to remove the entity that's just been rendered and the player touched.
  *
+ * @param int entity_id
+ * @param int player_id
+ *
  * @return void
  */
-public fwd_weaponbox_touched(entity_id) {
+public fwd_weaponbox_touched(entity_id, player_id) {
 	#if defined DEBUG
-	new entity_id_str[32];
-	
+	new entity_id_str[32], player_id_str[512];
+
 	num_to_str(entity_id, entity_id_str, 32);
-	
-	server_print("fwd_misc_spawned: %s", entity_id_str);
+	num_to_str(player_id, player_id_str, 512);
+
+	server_print("fwd_misc_spawned: entity_id %s, player_id %s", entity_id_str, player_id_str);
 	#endif
 
 	remove_entity_safe(entity_id);
+
+	if (!user_has_weapon(player_id, HLW_CROSSBOW)) {
+		give_item(player_id, "weapon_crossbow");
+	}
 }
 
 /*
