@@ -137,7 +137,7 @@ public drop_weapons(player_id) {
 
 		num_to_str(user_weapon_index, user_weapon_index_str, 3);
 
-		server_print("drop_weapons @ %s: user_weapon_name %s,  user_weapons[user_weapon_index] %s", user_name, user_weapon_name, user_weapon_index_str);
+		server_print("drop_weapons @ %s: user_weapon_name %s, user_weapons[user_weapon_index] %s", user_name, user_weapon_name, user_weapon_index_str);
 		#endif
 
 		if (!equali(user_weapon_name, "weapon_crossbow")) {
@@ -224,7 +224,7 @@ public fwd_weaponbox_touched(entity_id, player_id) {
 	num_to_str(entity_id, entity_id_str, 32);
 	num_to_str(player_id, player_id_str, 512);
 
-	server_print("fwd_misc_spawned: entity_id %s, player_id %s", entity_id_str, player_id_str);
+	server_print("fwd_weaponbox_touched: entity_id %s, player_id %s", entity_id_str, player_id_str);
 	#endif
 
 	remove_entity_safe(entity_id);
