@@ -6,7 +6,7 @@
 #include <hamsandwich>
 
 #define PLUGIN "Crossbow Only"
-#define VERSION "0.67b"
+#define VERSION "0.70b"
 #define AUTHOR "Facundo Montero (facuarmo)"
 
 // Ucomment to enable server console debugging.
@@ -77,8 +77,8 @@ remove_entity_safe(entity_id) {
 	#endif
 
 	if (pev_valid(entity_id) == ENTITY_INVALID) {
-		#if defined DEBUG // Please don't bully me for the look of this statement :)
-			server_print("pev: invalid for %s", entity_str);
+		#if defined DEBUG
+		server_print("pev: invalid for %s", entity_str);
 		#endif
 		
 		return;
@@ -190,46 +190,6 @@ public weapon_changed(player_id) {
 }
 
 /*
- * This method will fire during every round start and it'll try to traverse through each active real
- * player (not HLTV, alive and not connecting) and then it'll try to force them to drop back any
- * weapon they might've gotten during their spawn. Once dropped, it'll give them a crossbow.
- *
- * @return int
- */
-public handle_round_start() {
-	get_players(players, player_count,"ahi");
-
-	for (new player_index = 0; player_index < player_count; player_index++) {
-		if (is_user_alive(players[player_index])) {
-			#if defined DEBUG
-			server_print("handle_round_start: calling drop_weapons()...");
-			#endif
-
-			drop_weapons(players[player_index]);
-	
-			give_item(players[player_index], "weapon_crossbow");
-		}
-	}
-
-	return PLUGIN_HANDLED;
-}
-
-/*
- * This method will detect when a new round begins and then, it'll delay a task to run
- * "handle_round_start" so that it doesn't trigger fast enough to crash the server.
- *
- * NOTE: I'm pretty sure there's a better way to do this, please don't hurt me, I'm new to Pawn. :)
- *
- * @param int player_id
- * @return int
- */
-public round_start(player_id) {
-	set_task(0.1, "handle_round_start", player_id);
-
-	return PLUGIN_HANDLED;
-}
-
-/*
  * This method will iterate through each of the constant arrays defined above and try to get rid of
  * any matching entity in a safe and controlled manner (by "thinking" and then actually removing the
  * entity).
@@ -273,22 +233,6 @@ public fwd_weaponbox_touched(entity_id, player_id) {
 }
 
 /*
- * This method ensures that on any weapon drop, we're 100% certain that the target player will get
- * at least one crossbow given again in order to keep playing throughout the gamemode.
- *
- * @return int
- */
-public handle_drop(player_id) {
-	#if defined DEBUG
-	server_print("handle_drop: calling handle_weapons()...");
-	#endif
-
-	handle_weapons(player_id, player_id * 32);
-
-	return PLUGIN_CONTINUE;
-}
-
-/*
  * This method will handle the primary attack so that it can reset the entity ammo to its default
  * (which is 5 for the crossbow). This operation, in fact, provides support for infinite ammo.
  *
@@ -310,8 +254,6 @@ public plugin_init() {
 
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	register_event("CurWeapon","weapon_changed","b","1=1");
-	register_event("ResetHUD","round_start","b","1=1");
-	register_clcmd("drop", "handle_drop");
 	RegisterHam( Ham_Touch, "weaponbox", "fwd_weaponbox_touched", 1 );
 	RegisterHam( Ham_Weapon_PrimaryAttack, "weapon_crossbow", "handle_primary_attack", 1 );
 
