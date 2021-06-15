@@ -44,7 +44,7 @@ If you're planning on contributing, passing `debug` next to the filename within 
 
 ## Contributions
 
-If you liked the plugin or you feel like there's anything to improve on or optimize, feel free to provide your suggestions or, better yet, **submit a pull request to the repo!**.
+If you liked the plugin or you feel like there's anything to improve on or optimize, feel free to provide your suggestions or, better yet, **submit a pull request to the repo!**
 
 ## Credits
 
