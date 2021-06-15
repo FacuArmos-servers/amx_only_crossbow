@@ -19,7 +19,7 @@
  * - Improve the performance of the code by decreasing the amount of strings usage.
  * - Handle events properly, so that we don't have to use arbitrarily timed tasks anymore.
  * - Currently, arbitrary multiplications are being used in the hope for task IDs to not repeat,
- *   it's clearly know though, that this approach might not be reliable and should be investigated.
+ *   it's clearly known though, that this approach might not be reliable and should be investigated.
  */
 
 /*
