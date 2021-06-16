@@ -6,7 +6,7 @@
 #include <hamsandwich>
 
 #define PLUGIN "Crossbow Only"
-#define VERSION "0.71b"
+#define VERSION "0.73b"
 #define AUTHOR "Facundo Montero (facuarmo)"
 
 // Ucomment to enable server console debugging.
@@ -134,9 +134,9 @@ public drop_weapons(player_id) {
 	get_user_weapons(player_id, user_weapons, user_weapon_count);
 
 	for (new user_weapon_index = 0; user_weapon_index < user_weapon_count; user_weapon_index++) {
-		#if defined DEBUG
 		get_weaponname(user_weapons[user_weapon_index], user_weapon_name, 32);
 
+		#if defined DEBUG
 		num_to_str(user_weapon_index, user_weapon_index_str, 3);
 
 		server_print("drop_weapons @ %s: user_weapon_name %s, user_weapons[user_weapon_index] %s", user_name, user_weapon_name, user_weapon_index_str);
