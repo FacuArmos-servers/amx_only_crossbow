@@ -141,7 +141,7 @@ public drop_weapons(player_id) {
 		#endif
 
 		if (!equali(user_weapon_name, "weapon_crossbow")) {
-			client_cmd(player_id, "drop %s", user_weapon_name);
+			engclient_cmd(player_id, "drop", user_weapon_name);
 
 			#if defined DEBUG
 			server_print("client_cmd @ %s: sent 'drop %s'", user_name, user_weapon_name);
