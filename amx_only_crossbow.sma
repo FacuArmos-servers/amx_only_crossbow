@@ -231,8 +231,10 @@ public fwd_weaponbox_touched(entity_id, player_id) {
 
 	remove_entity_safe(entity_id);
 
-	if (!user_has_weapon(player_id, HLW_CROSSBOW)) {
+	if (is_user_connected(player_id) && !user_has_weapon(player_id, HLW_CROSSBOW)) {
 		give_item(player_id, "weapon_crossbow");
+
+		drop_weapons(player_id);
 	}
 }
 
