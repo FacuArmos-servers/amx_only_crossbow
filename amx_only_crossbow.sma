@@ -121,6 +121,12 @@ remove_entity_with_class(entity_name[], entity_class[] = "") {
  * @return int
  */
 public drop_weapons(player_id) {
+	#if defined DEBUG
+	new user_name[512], user_weapon_index_str[3];
+
+	get_user_name(player_id, user_name, 512);
+	#endif
+	
 	new user_weapons[32], user_weapon_count = 0;
 
 	new user_weapon_name[32];
@@ -128,12 +134,8 @@ public drop_weapons(player_id) {
 	get_user_weapons(player_id, user_weapons, user_weapon_count);
 
 	for (new user_weapon_index = 0; user_weapon_index < user_weapon_count; user_weapon_index++) {
-		get_weaponname(user_weapons[user_weapon_index], user_weapon_name, 32);
-
 		#if defined DEBUG
-		new user_name[512], user_weapon_index_str[3];
-
-		get_user_name(player_id, user_name, 512);
+		get_weaponname(user_weapons[user_weapon_index], user_weapon_name, 32);
 
 		num_to_str(user_weapon_index, user_weapon_index_str, 3);
 
@@ -144,7 +146,7 @@ public drop_weapons(player_id) {
 			engclient_cmd(player_id, "drop", user_weapon_name);
 
 			#if defined DEBUG
-			server_print("client_cmd @ %s: sent 'drop %s'", user_name, user_weapon_name);
+			server_print("engclient_cmd @ %s: sent 'drop %s'", user_name, user_weapon_name);
 			#endif
 		}
 	}
